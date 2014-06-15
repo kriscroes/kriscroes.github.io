@@ -98,3 +98,8 @@ google_analytics_tracking_id:
 
 # Facebook Like
 facebook_like: false
+
+#side_bar
+sidebar: collapse
+
+default_asides: [asides/recent_posts.html, ... , asides/footer_in_sidebar.html]
