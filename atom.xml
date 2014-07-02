@@ -4,7 +4,7 @@
   <title><![CDATA[Kris Croes]]></title>
   <link href="http://kriscroes.github.io/atom.xml" rel="self"/>
   <link href="http://kriscroes.github.io/"/>
-  <updated>2014-07-02T08:14:21-04:00</updated>
+  <updated>2014-07-02T08:18:49-04:00</updated>
   <id>http://kriscroes.github.io/</id>
   <author>
     <name><![CDATA[Kris Croes]]></name>
@@ -188,7 +188,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<h3>Create View</h3>
+<h2>Create View</h2>
 
 <ol>
 <li>Add the file &lsquo;index.erb&rsquo; to the views folder: the end result will be rendered by ERB based on the contents in this file.</li>
@@ -202,7 +202,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<h3>Voilà, the end result!</h3>
+<h2>Voilà, the end result!</h2>
 
 <p>Run &lsquo;rackup&rsquo; command in terminal to view end result in browser.</p>
 
