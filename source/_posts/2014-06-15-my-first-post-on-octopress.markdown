@@ -115,7 +115,7 @@ class HelloController < Sinatra::Base
 end
 ```
 
-###Create View
+##Create View
 
 1. Add the file 'index.erb' to the views folder: the end result will be rendered by ERB based on the contents in this file.
 
@@ -125,7 +125,7 @@ end
 <h1><%=@hello.message%></h1>
 ```
 
-###Voilà, the end result!
+##Voilà, the end result!
 
 Run 'rackup' command in terminal to view end result in browser.
 
