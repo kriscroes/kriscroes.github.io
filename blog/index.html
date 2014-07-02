@@ -9,8 +9,7 @@
   <meta name="author" content="Kris Croes">
 
   
-  <meta name="description" content="Hello World!
-">
+  <meta name="description" content="This blog post is intended as a guideline on how to set up a basic MVC (Model-View-Controller) structure in ruby using ERB, Sinatra and Active Record &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -74,7 +73,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2014/06/15/my-first-post-on-octopress/">My First Post on Octopress</a></h1>
+      <h1 class="entry-title"><a href="/blog/2014/07/02/my-first-post-on-octopress/">&#8216;Hello World&#8217; MVC App Powered by ERB, Sinatra and Active Record</a></h1>
     
     
       <p class="meta">
@@ -90,14 +89,202 @@
   
 
 
-<time datetime="2014-06-15T14:32:57-04:00" pubdate data-updated="true">Jun 15<span>th</span>, 2014</time>
+<time datetime="2014-07-02T14:32:57-04:00" pubdate data-updated="true">Jul 2<span>nd</span>, 2014</time>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>Hello World!</p>
+  <div class="entry-content"><p>This blog post is intended as a guideline on how to set up a basic MVC (Model-View-Controller) structure in ruby using ERB, Sinatra and Active Record.</p>
+
+<p>MVC is a best-practice pattern used in software systems. One of the benefits is that it can avoid spaghetti code structures and help ease maintenance (or avoid coders such as Irv from the strip below)</p>
+
+<p style="text-align:center;"><img src="/images/blog1/dilbert.png" title="'Hooray for named parameters and bootlegging, in no particular order!'" ></p>
+
+<p>You can apply MVC to a basic &lsquo;Hello World&rsquo; app by following the next steps (and according to a logical folder structure!):</p>
+
+<ol>
+<li><strong>Model</strong>: Represent data and logic by creating a ruby Class which interacts with an SQLite database via Active Record for storing and retrieving the “Hello Message”.</li>
+<li><strong>View</strong>: Use ERB to render the “Hello Message” to be displayed to the user.</li>
+<li><strong>Controller</strong>: Use Sinatra routes to ask the Model for the “Hello Message” and to send this back to the browser for user display.</li>
+</ol>
+
+
+<p style="text-align:center;"><img src="/images/blog1/mvc.png" width="500" height="700" title="'Hooray for named parameters and bootlegging, in no particular order!'" ></p>
+
+<h2>Build initial folder structure</h2>
+
+<p>Start by creating the following basic folder structure. The Models, Views and Controllers will be grouped into a folder named &lsquo;app&rsquo;. The &lsquo;config&rsquo; folder will contain the environment configurations and the &lsquo;db&rsquo; folder will contain the database (Active Record) migrations (i.e. create &lsquo;Hello World&rsquo; table).</p>
+
+<p style="text-align:center;"><img src="/images/blog1/init_folder_structure.png" width="300" height="500" title="'Hooray for named parameters and bootlegging, in no particular order!'" ></p>
+
+<h2>Setup environment and gems</h2>
+
+<ol>
+<li>Add the files &lsquo;Gemfile&rsquo; and &lsquo;config.ru&rsquo; to the root of the project folder.</li>
+<li>Add the file &lsquo;environment.rb&rsquo; to the config folder.</li>
+<li>Add the file &lsquo;Rakefile&rsquo; to the root of the project folder.</li>
+</ol>
+
+
+<p style="text-align:center;"><img src="/images/blog1/folder_structure_2.png" width="300" height="500" title="'Hooray for named parameters and bootlegging, in no particular order!'" ></p>
+
+<p>Add the following code to these files. Make sure to run command &lsquo;bundle&rsquo; at the end.</p>
+
+<figure class='code'><figcaption><span>Gemfile</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">source</span> <span class="s1">&#39;http://rubygems.org&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;sinatra&#39;</span>
+</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;activerecord&#39;</span><span class="p">,</span> <span class="ss">:require</span> <span class="o">=&gt;</span> <span class="s1">&#39;active_record&#39;</span>
+</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;sinatra-activerecord&#39;</span><span class="p">,</span> <span class="ss">:require</span> <span class="o">=&gt;</span> <span class="s1">&#39;sinatra/activerecord&#39;</span>
+</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;rake&#39;</span>
+</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;require_all&#39;</span>
+</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;sqlite3&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>config.ru</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;./config/environment&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">run</span> <span class="no">HelloController</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>environment.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;bundler/setup&#39;</span>
+</span><span class='line'><span class="no">Bundler</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="ss">:default</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span><span class="o">.</span><span class="n">establish_connection</span><span class="p">(</span>
+</span><span class='line'>  <span class="ss">:adapter</span> <span class="o">=&gt;</span> <span class="s1">&#39;sqlite3&#39;</span><span class="p">,</span>
+</span><span class='line'>  <span class="ss">:database</span> <span class="o">=&gt;</span> <span class="s1">&#39;db/hello.sqlite3&#39;</span>
+</span><span class='line'><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">require_all</span> <span class="s2">&quot;app&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>Rakefile</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">require_relative</span> <span class="s1">&#39;./config/environment&#39;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;sinatra/activerecord/rake&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Create Model</h2>
+
+<ol>
+<li>Add the file &lsquo;hello.rb&rsquo; to the models folder: contains a Hello class which inherits from ActiveRecord Base.</li>
+<li>Add the file &lsquo;create_hello.rb&rsquo; to the migrate folder: contains the code to create the database schema. For this example, a table named &lsquo;hello&rsquo; will be created with a column &lsquo;message&rsquo; to hold the &ldquo;Hello World!&rdquo; message. Make sure to run the rake task db:migrate to create the table.</li>
+</ol>
+
+
+<p style="text-align:center;"><img src="/images/blog1/folder_structure_3.png" width="300" height="500" title="'Hooray for named parameters and bootlegging, in no particular order!'" ></p>
+
+<figure class='code'><figcaption><span>hello.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Hello</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>create_hello.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">CreateHello</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Migration</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">change</span>
+</span><span class='line'>    <span class="n">create_table</span> <span class="ss">:hello</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+</span><span class='line'>      <span class="n">t</span><span class="o">.</span><span class="n">string</span> <span class="ss">:message</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Create Controller</h2>
+
+<ol>
+<li>Add the file &lsquo;hello_controller.rb&rsquo; to the controllers folder: code in this file ensures that a new instance of Hello is created and persisted with a message &ldquo;Hello World!&rdquo;. This message is then passed to ERB (Embedded Ruby) for rendering in the index template.</li>
+</ol>
+
+
+<p style="text-align:center;"><img src="/images/blog1/folder_structure_4.png" width="300" height="500" title="'Hooray for named parameters and bootlegging, in no particular order!'" ></p>
+
+<figure class='code'><figcaption><span>hello_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">HelloController</span> <span class="o">&lt;</span> <span class="ss">Sinatra</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">register</span> <span class="ss">Sinatra</span><span class="p">:</span><span class="ss">:ActiveRecordExtension</span>
+</span><span class='line'>  <span class="n">set</span> <span class="ss">:views</span><span class="p">,</span> <span class="no">Proc</span><span class="o">.</span><span class="n">new</span> <span class="p">{</span> <span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="s2">&quot;../views/&quot;</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">get</span> <span class="s2">&quot;/&quot;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="vi">@hello</span> <span class="o">=</span> <span class="no">Hello</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'>    <span class="vi">@hello</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Hello World!&quot;</span>
+</span><span class='line'>    <span class="vi">@hello</span><span class="o">.</span><span class="n">save</span>
+</span><span class='line'>    <span class="n">erb</span> <span class="ss">:&quot;index&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Create View</h3>
+
+<ol>
+<li>Add the file &lsquo;index.erb&rsquo; to the views folder: the end result will be rendered by ERB based on the contents in this file.</li>
+</ol>
+
+
+<p style="text-align:center;"><img src="/images/blog1/folder_structure_5.png" width="300" height="500" title="'Hooray for named parameters and bootlegging, in no particular order!'" ></p>
+
+<figure class='code'><figcaption><span>index.erb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;&lt;%=</span><span class="vi">@hello</span><span class="o">.</span><span class="n">message</span><span class="sx">%&gt;&lt;/h1&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Voilà, the end result!</h3>
+
+<p>Run &lsquo;rackup&rsquo; command in terminal to view end result in browser.</p>
+
+<p style="text-align:center;"><img src="/images/blog1/end_result.png" width="300" height="500" title="'Hooray for named parameters and bootlegging, in no particular order!'" ></p>
 </div>
   
   
@@ -117,7 +304,7 @@
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2014/06/15/my-first-post-on-octopress/">My First Post on Octopress</a>
+        <a href="/blog/2014/07/02/my-first-post-on-octopress/">&#8216;Hello World&#8217; MVC App Powered by ERB, Sinatra and Active Record</a>
       </li>
     
   </ul>
@@ -170,7 +357,7 @@
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2014/06/15/my-first-post-on-octopress/">My First Post on Octopress</a>
+        <a href="/blog/2014/07/02/my-first-post-on-octopress/">'Hello World' MVC App Powered by ERB, Sinatra and Active Record</a>
       </li>
     
   </ul>

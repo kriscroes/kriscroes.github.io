@@ -4,7 +4,7 @@
   <title><![CDATA[Category: School | Kris Croes]]></title>
   <link href="http://kriscroes.github.io/blog/categories/school/atom.xml" rel="self"/>
   <link href="http://kriscroes.github.io/"/>
-  <updated>2014-06-15T16:25:06-04:00</updated>
+  <updated>2014-07-02T08:14:21-04:00</updated>
   <id>http://kriscroes.github.io/</id>
   <author>
     <name><![CDATA[Kris Croes]]></name>
@@ -14,11 +14,156 @@
 
   
   <entry>
-    <title type="html"><![CDATA[My First Post on Octopress]]></title>
-    <link href="http://kriscroes.github.io/blog/2014/06/15/my-first-post-on-octopress/"/>
-    <updated>2014-06-15T14:32:57-04:00</updated>
-    <id>http://kriscroes.github.io/blog/2014/06/15/my-first-post-on-octopress</id>
-    <content type="html"><![CDATA[<p>Hello World!</p>
+    <title type="html"><![CDATA['Hello World' MVC App Powered by ERB, Sinatra and Active Record]]></title>
+    <link href="http://kriscroes.github.io/blog/2014/07/02/my-first-post-on-octopress/"/>
+    <updated>2014-07-02T14:32:57-04:00</updated>
+    <id>http://kriscroes.github.io/blog/2014/07/02/my-first-post-on-octopress</id>
+    <content type="html"><![CDATA[<p>This blog post is intended as a guideline on how to set up a basic MVC (Model-View-Controller) structure in ruby using ERB, Sinatra and Active Record.</p>
+
+<p>MVC is a best-practice pattern used in software systems. One of the benefits is that it can avoid spaghetti code structures and help ease maintenance (or avoid coders such as Irv from the strip below)</p>
+
+<p style="text-align:center;"><img src="/images/blog1/dilbert.png" title="&lsquo;Hooray for named parameters and bootlegging, in no particular order!&rsquo;" ></p>
+
+<p>You can apply MVC to a basic &lsquo;Hello World&rsquo; app by following the next steps (and according to a logical folder structure!):</p>
+
+<ol>
+<li><strong>Model</strong>: Represent data and logic by creating a ruby Class which interacts with an SQLite database via Active Record for storing and retrieving the “Hello Message”.</li>
+<li><strong>View</strong>: Use ERB to render the “Hello Message” to be displayed to the user.</li>
+<li><strong>Controller</strong>: Use Sinatra routes to ask the Model for the “Hello Message” and to send this back to the browser for user display.</li>
+</ol>
+
+
+<p style="text-align:center;"><img src="/images/blog1/mvc.png" width="500" height="700" title="&lsquo;Hooray for named parameters and bootlegging, in no particular order!&rsquo;" ></p>
+
+<h2>Build initial folder structure</h2>
+
+<p>Start by creating the following basic folder structure. The Models, Views and Controllers will be grouped into a folder named &lsquo;app&rsquo;. The &lsquo;config&rsquo; folder will contain the environment configurations and the &lsquo;db&rsquo; folder will contain the database (Active Record) migrations (i.e. create &lsquo;Hello World&rsquo; table).</p>
+
+<p style="text-align:center;"><img src="/images/blog1/init_folder_structure.png" width="300" height="500" title="&lsquo;Hooray for named parameters and bootlegging, in no particular order!&rsquo;" ></p>
+
+<h2>Setup environment and gems</h2>
+
+<ol>
+<li>Add the files &lsquo;Gemfile&rsquo; and &lsquo;config.ru&rsquo; to the root of the project folder.</li>
+<li>Add the file &lsquo;environment.rb&rsquo; to the config folder.</li>
+<li>Add the file &lsquo;Rakefile&rsquo; to the root of the project folder.</li>
+</ol>
+
+
+<p style="text-align:center;"><img src="/images/blog1/folder_structure_2.png" width="300" height="500" title="&lsquo;Hooray for named parameters and bootlegging, in no particular order!&rsquo;" ></p>
+
+<p>Add the following code to these files. Make sure to run command &lsquo;bundle&rsquo; at the end.</p>
+
+<p>```ruby Gemfile
+source &lsquo;<a href="http://rubygems.org">http://rubygems.org</a>&rsquo;</p>
+
+<p>gem &lsquo;sinatra&rsquo;
+gem &lsquo;activerecord&rsquo;, :require => &lsquo;active_record&rsquo;
+gem &lsquo;sinatra-activerecord&rsquo;, :require => &lsquo;sinatra/activerecord&rsquo;
+gem &lsquo;rake&rsquo;
+gem &lsquo;require_all&rsquo;
+gem &lsquo;sqlite3&rsquo;
+```</p>
+
+<p>```ruby config.ru
+require &lsquo;./config/environment&rsquo;</p>
+
+<p>run HelloController
+```</p>
+
+<p>```ruby environment.rb
+require &lsquo;bundler/setup&rsquo;
+Bundler.require(:default)</p>
+
+<p>ActiveRecord::Base.establish_connection(
+  :adapter => &lsquo;sqlite3&rsquo;,
+  :database => &lsquo;db/hello.sqlite3&rsquo;
+)</p>
+
+<p>require_all &ldquo;app&rdquo;
+```</p>
+
+<p><code>ruby Rakefile
+require_relative './config/environment'
+require 'sinatra/activerecord/rake'  
+</code></p>
+
+<h2>Create Model</h2>
+
+<ol>
+<li>Add the file &lsquo;hello.rb&rsquo; to the models folder: contains a Hello class which inherits from ActiveRecord Base.</li>
+<li>Add the file &lsquo;create_hello.rb&rsquo; to the migrate folder: contains the code to create the database schema. For this example, a table named &lsquo;hello&rsquo; will be created with a column &lsquo;message&rsquo; to hold the &ldquo;Hello World!&rdquo; message. Make sure to run the rake task db:migrate to create the table.</li>
+</ol>
+
+
+<p style="text-align:center;"><img src="/images/blog1/folder_structure_3.png" width="300" height="500" title="&lsquo;Hooray for named parameters and bootlegging, in no particular order!&rsquo;" ></p>
+
+<p>```ruby hello.rb
+class Hello &lt; ActiveRecord::Base</p>
+
+<p>end
+```</p>
+
+<p>```ruby create_hello.rb
+class CreateHello &lt; ActiveRecord::Migration
+  def change</p>
+
+<pre><code>create_table :hello do |t|
+  t.string :message
+  end
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<h2>Create Controller</h2>
+
+<ol>
+<li>Add the file &lsquo;hello_controller.rb&rsquo; to the controllers folder: code in this file ensures that a new instance of Hello is created and persisted with a message &ldquo;Hello World!&rdquo;. This message is then passed to ERB (Embedded Ruby) for rendering in the index template.</li>
+</ol>
+
+
+<p style="text-align:center;"><img src="/images/blog1/folder_structure_4.png" width="300" height="500" title="&lsquo;Hooray for named parameters and bootlegging, in no particular order!&rsquo;" ></p>
+
+<p>```ruby hello_controller.rb
+class HelloController &lt; Sinatra::Base
+  register Sinatra::ActiveRecordExtension
+  set :views, Proc.new { File.join(root, &ldquo;../views/&rdquo;) }</p>
+
+<p>  get &ldquo;/&rdquo; do</p>
+
+<pre><code>@hello = Hello.new
+@hello.message = "Hello World!"
+@hello.save
+erb :"index"
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<h3>Create View</h3>
+
+<ol>
+<li>Add the file &lsquo;index.erb&rsquo; to the views folder: the end result will be rendered by ERB based on the contents in this file.</li>
+</ol>
+
+
+<p style="text-align:center;"><img src="/images/blog1/folder_structure_5.png" width="300" height="500" title="&lsquo;Hooray for named parameters and bootlegging, in no particular order!&rsquo;" ></p>
+
+<p>```ruby index.erb</p>
+
+<h1><%=@hello.message%></h1>
+
+
+<p>```</p>
+
+<h3>Voilà, the end result!</h3>
+
+<p>Run &lsquo;rackup&rsquo; command in terminal to view end result in browser.</p>
+
+<p style="text-align:center;"><img src="/images/blog1/end_result.png" width="300" height="500" title="&lsquo;Hooray for named parameters and bootlegging, in no particular order!&rsquo;" ></p>
 ]]></content>
   </entry>
   
